@@ -4,6 +4,7 @@ import '../../features/auth/presentation/screens/otp_verification_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/welcome_screen.dart';
+import '../../features/create_listing/presentation/screens/create_listing_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/listing_detail/presentation/screens/listing_detail_screen.dart';
 
@@ -29,6 +30,12 @@ final appRouter = GoRouter(
       name: 'listing-detail',
       builder: (context, state) => ListingDetailScreen(listingId: state.pathParameters['id']!),
     ),
+    GoRoute(
+      path: '/create-listing',
+      name: 'create-listing',
+      builder: (context, state) => const CreateListingScreen(),
+    ),
     // Routes à venir : /search, /messages, /profile, /category/:id...
   ],
 );
+

@@ -25,7 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _handleNavTap(int index) {
     if (index == 2) {
-      // TODO: naviguer vers le wizard de création d'annonce (/create-listing)
+      context.push('/create-listing');
       return;
     }
     setState(() => _navIndex = index);

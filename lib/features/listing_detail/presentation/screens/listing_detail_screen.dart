@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../home/data/models/listing_model.dart';
 import '../../../home/presentation/providers/favorite_overrides_provider.dart';
 import '../../../home/presentation/providers/home_providers.dart';
+import '../../../messaging/presentation/screens/chat_screen_args.dart';
 import '../widgets/listing_badges.dart';
 import '../widgets/listing_image_carousel.dart';
 import '../widgets/seller_card.dart';
@@ -97,6 +98,8 @@ class _ListingDetailContent extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
+                        if (listing.status == 'sold')
+                          const InfoBadge(label: 'Vendu', icon: Icons.check_circle_rounded, color: Colors.white, backgroundColor: AppColors.textPrimary),
                         InfoBadge(label: listing.conditionLabel, icon: Icons.verified_outlined, color: AppColors.accentGreen, backgroundColor: const Color(0xFFE9F3EC)),
                         if (listing.isNegotiable)
                           const InfoBadge(label: 'Prix négociable', icon: Icons.handshake_outlined, color: AppColors.primary, backgroundColor: Color(0xFFFBE9DD)),
@@ -168,12 +171,20 @@ class _ListingDetailContent extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: naviguer vers la messagerie (module Reverb pas encore construit)
-                      // context.push('/messages/new?listingId=${listing.id}')
-                    },
-                    icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
-                    label: const Text('Contacter le vendeur'),
+                    onPressed: (listing.seller == null || listing.status == 'sold')
+                        ? null
+                        : () => context.push(
+                              '/messages/chat',
+                              extra: ChatScreenArgs.newConversation(
+                                listingId: listing.id,
+                                listingTitle: listing.title,
+                                sellerId: listing.seller!.id,
+                                sellerName: listing.seller!.fullName,
+                                sellerAvatarUrl: listing.seller!.avatarUrl,
+                              ),
+                            ),
+                    icon: Icon(listing.status == 'sold' ? Icons.block_rounded : Icons.chat_bubble_outline_rounded, size: 18),
+                    label: Text(listing.status == 'sold' ? 'Annonce vendue' : 'Contacter le vendeur'),
                   ),
                 ),
               ],

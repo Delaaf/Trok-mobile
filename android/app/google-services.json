@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211759085777",
+    "project_id": "projet-trok",
+    "storage_bucket": "projet-trok.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211759085777:android:4f80f1bced8ca84696adf0",
+        "android_client_info": {
+          "package_name": "com.example.trok_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABV9VtW22_I4IAFXTYVEwffXjxTv80yxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

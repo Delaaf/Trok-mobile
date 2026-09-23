@@ -31,7 +31,18 @@ class DioClient {
         },
         onError: (error, handler) async {
           if (error.response?.statusCode == 401) {
-            await _secureStorage.delete(key: _tokenStorageKey);
+            // IMPORTANT: une requête partie AVANT un changement de compte peut
+            // recevoir sa réponse 401 APRÈS qu'un nouveau token (compte suivant)
+            // ait déjà été sauvegardé. Sans cette vérification, on purgerait le
+            // token du compte fraîchement connecté à cause d'une requête obsolète
+            // -> symptôme observé : "impossible d'afficher le profil" pendant
+            // quelques secondes juste après un changement de compte.
+            final failedAuthHeader = error.requestOptions.headers['Authorization'] as String?;
+            final currentToken = await _secureStorage.read(key: _tokenStorageKey);
+
+            if (currentToken != null && failedAuthHeader == 'Bearer $currentToken') {
+              await _secureStorage.delete(key: _tokenStorageKey);
+            }
           }
           handler.next(error);
         },

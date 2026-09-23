@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/auth/session_cache.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/notifications/push_notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../widgets/numeric_keypad.dart';
@@ -83,6 +85,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       if (!mounted) return;
 
       if (loggedIn) {
+        clearUserScopedCache(ref); // purge les données d'un éventuel compte précédent
+        ref.read(pushNotificationServiceProvider).registerDeviceToken(); // fire-and-forget
         context.go('/'); // token déjà sauvegardé par le repository
       } else {
         // Cas password_reset par ex : le code est vérifié mais il n'y a pas de token,

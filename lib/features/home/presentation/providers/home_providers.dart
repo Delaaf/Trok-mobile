@@ -10,10 +10,16 @@ final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) {
   return ref.watch(catalogRepositoryProvider).getCategories();
 });
 
-/// Annonces "près de chez vous" pour la home. `commune` est nullable :
-/// null tant que l'utilisateur n'a pas choisi de quartier -> montre les plus récentes.
-final nearbyListingsProvider = FutureProvider.family<PaginatedListings, String?>((ref, commune) {
-  return ref.watch(listingRepositoryProvider).getListings(commune: commune, sort: 'recent');
+/// Annonces "près de chez vous" pour la home. La clé combine ville, commune
+/// et localisation libre (record Dart, comparé par valeur -> fonctionne
+/// nativement comme clé de family). Tous nuls -> aucune localisation choisie.
+final nearbyListingsProvider = FutureProvider.family<PaginatedListings, ({String? city, String? commune, String? location})>((ref, filter) {
+  return ref.watch(listingRepositoryProvider).getListings(
+        city: filter.city,
+        commune: filter.commune,
+        location: filter.location,
+        sort: 'recent',
+      );
 });
 
 /// Détail d'une annonce précise (écran de détail).

@@ -4,13 +4,20 @@ import '../../../../core/theme/app_colors.dart';
 class HomeHeroSearch extends StatelessWidget {
   const HomeHeroSearch({
     super.key,
-    required this.cityName,
+    required this.headlineLocation,
+    this.selectedLocationLabel,
     this.onSearchTap,
     this.onQuartierTap,
     this.onExploreTap,
   });
 
-  final String cityName;
+  /// Toujours non-null : "Côte d'Ivoire" par défaut, ou le nom de la
+  /// ville/commune choisie une fois qu'un filtre est actif.
+  final String headlineLocation;
+
+  /// Null = "Toutes les localités" (affiché tel quel dans le sélecteur).
+  final String? selectedLocationLabel;
+
   final VoidCallback? onSearchTap;
   final VoidCallback? onQuartierTap;
   final VoidCallback? onExploreTap;
@@ -26,8 +33,8 @@ class HomeHeroSearch extends StatelessWidget {
           TextSpan(
             style: textTheme.displayLarge,
             children: [
-              const TextSpan(text: 'Trouvez tout ce que vous cherchez à '),
-              TextSpan(text: '$cityName.', style: const TextStyle(color: AppColors.primary)),
+              const TextSpan(text: 'Trouvez tout ce que vous cherchez en '),
+              TextSpan(text: '$headlineLocation.', style: const TextStyle(color: AppColors.primary)),
             ],
           ),
         ),
@@ -59,7 +66,7 @@ class HomeHeroSearch extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // Sélecteur de quartier
+        // Sélecteur de localisation
         Material(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(16),
@@ -70,10 +77,16 @@ class HomeHeroSearch extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.map_outlined, size: 20, color: AppColors.textSecondary),
+                  Icon(Icons.map_outlined, size: 20, color: selectedLocationLabel != null ? AppColors.primary : AppColors.textSecondary),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('Tous les quartiers', style: textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary)),
+                    child: Text(
+                      selectedLocationLabel ?? 'Toutes les localités',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: selectedLocationLabel != null ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
                   ),
                   const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textSecondary),
                 ],
@@ -83,7 +96,6 @@ class HomeHeroSearch extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // CTA principal
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(

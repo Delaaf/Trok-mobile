@@ -72,6 +72,7 @@ class ListingModel {
     this.publishedAt,
     this.createdAt,
     this.description,
+    this.rejectionReason,
     this.attributes = const {},
     this.category,
   });
@@ -95,6 +96,7 @@ class ListingModel {
   final DateTime? publishedAt;
   final DateTime? createdAt;
   final String? description;
+  final String? rejectionReason;
   final Map<String, dynamic> attributes;
   final ListingCategoryModel? category;
 
@@ -161,6 +163,7 @@ class ListingModel {
       publishedAt: json['published_at'] != null ? DateTime.tryParse(json['published_at'] as String) : null,
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at'] as String) : null,
       description: json['description'] as String?,
+      rejectionReason: json['rejection_reason'] as String?,
       attributes: json['attributes'] is Map ? Map<String, dynamic>.from(json['attributes'] as Map) : const {},
       category: categoryRaw is Map && (categoryRaw['id'] != null)
           ? ListingCategoryModel.fromJson(Map<String, dynamic>.from(categoryRaw))

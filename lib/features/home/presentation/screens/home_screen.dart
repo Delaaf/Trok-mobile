@@ -6,6 +6,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../data/models/category_model.dart';
 import '../providers/favorite_overrides_provider.dart';
 import '../providers/home_providers.dart';
+import '../utils/communes.dart';
+import '../widgets/commune_picker_sheet.dart';
 import '../widgets/home_categories_section.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_hero_search.dart';
@@ -21,21 +23,39 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _navIndex = 0;
-  String? _selectedCommune; // null = "Tous les quartiers"
+
+  /// null = "Toutes les localités". Un LocationPoint avec `commune` renseigné
+  /// = commune précise d'Abidjan ; avec seulement `city` = une autre ville de CI.
+  LocationPoint? _selectedLocation;
+
+  ({String? city, String? commune, String? location}) get _locationFilter =>
+      (city: _selectedLocation?.city, commune: _selectedLocation?.commune, location: _selectedLocation?.freeText);
 
   void _handleNavTap(int index) {
-    if (index == 2) {
-      context.push('/create-listing');
-      return;
+    // IMPORTANT: go() REMPLACE l'écran courant, contrairement à push() qui
+    // empile -> indispensable pour des onglets de navigation principale, sinon
+    // on accumule des instances d'écrans (et parfois liées à un ancien compte
+    // après une déconnexion/reconnexion) qui peuvent apparaître furtivement.
+    // Seul "Vendre" (index 2) reste en push, car c'est un vrai flux à part.
+    switch (index) {
+      case 0:
+        break; // déjà ici
+      case 1:
+        context.go('/favorites');
+      case 2:
+        context.push('/create-listing');
+      case 3:
+        context.go('/messages');
+      case 4:
+        context.go('/profile');
     }
-    setState(() => _navIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final categoriesAsync = ref.watch(categoriesProvider);
-    final listingsAsync = ref.watch(nearbyListingsProvider(_selectedCommune));
+    final listingsAsync = ref.watch(nearbyListingsProvider(_locationFilter));
     final favoriteOverrides = ref.watch(favoriteOverridesProvider);
 
     return Scaffold(
@@ -46,10 +66,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: AppColors.primary,
           onRefresh: () async {
             ref.invalidate(categoriesProvider);
-            ref.invalidate(nearbyListingsProvider(_selectedCommune));
+            ref.invalidate(nearbyListingsProvider(_locationFilter));
             await Future.wait([
               ref.read(categoriesProvider.future),
-              ref.read(nearbyListingsProvider(_selectedCommune).future),
+              ref.read(nearbyListingsProvider(_locationFilter).future),
             ]);
           },
           child: CustomScrollView(
@@ -57,16 +77,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 sliver: SliverToBoxAdapter(
-                  child: HomeHeader(locationLabel: _selectedCommune ?? 'Abidjan', onNotificationTap: () {}, onLocationTap: () {}),
+                  child: HomeHeader(
+                    locationLabel: _selectedLocation?.label ?? "Côte d'Ivoire",
+                    onNotificationTap: () {},
+                    onLocationTap: () {},
+                  ),
                 ),
               ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
                 sliver: SliverToBoxAdapter(
                   child: HomeHeroSearch(
-                    cityName: 'Abidjan',
-                    onSearchTap: () {}, // TODO: context.push('/search')
-                    onQuartierTap: () {}, // TODO: sélecteur de quartier -> setState(_selectedCommune)
+                    headlineLocation: _selectedLocation?.label ?? "Côte d'Ivoire",
+                    selectedLocationLabel: _selectedLocation?.label,
+                    onSearchTap: () => context.push('/search'),
+                    onQuartierTap: () async {
+                      final chosen = await showLocationPicker(context, current: _selectedLocation);
+                      if (!context.mounted || chosen == null) return; // sheet fermé sans choix -> on ne touche à rien
+                      setState(() {
+                        // Le sentinel "Toutes les localités" a city==null && commune==null
+                        _selectedLocation = (chosen.city == null && chosen.commune == null) ? null : chosen;
+                      });
+                    },
                     onExploreTap: () {},
                   ),
                 ),
@@ -102,7 +134,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           Text('Près de chez vous', style: textTheme.headlineMedium),
                           const SizedBox(height: 2),
                           Text(
-                            _selectedCommune != null ? 'Annonces à $_selectedCommune' : 'Annonces récentes à Abidjan',
+                            _selectedLocation != null
+                                ? 'Annonces à ${_selectedLocation!.label}'
+                                : "Annonces récentes en Côte d'Ivoire",
                             style: textTheme.bodySmall,
                           ),
                         ],
@@ -160,7 +194,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   sliver: SliverToBoxAdapter(
                     child: _InlineError(
                       message: 'Impossible de charger les annonces.',
-                      onRetry: () => ref.invalidate(nearbyListingsProvider(_selectedCommune)),
+                      onRetry: () => ref.invalidate(nearbyListingsProvider(_locationFilter)),
                     ),
                   ),
                 ),

@@ -14,13 +14,11 @@ class WelcomeScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Image de fond — marché/ville ivoirienne (à remplacer par un asset local en prod)
           CachedNetworkImage(
             imageUrl: 'https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=900',
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => Container(color: AppColors.textPrimary),
           ),
-          // Dégradé sombre pour la lisibilité du texte
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -38,7 +36,6 @@ class WelcomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  // Logo
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
@@ -54,7 +51,6 @@ class WelcomeScreen extends StatelessWidget {
 
                   const Spacer(),
 
-                  // Texte accrocheur
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -66,13 +62,12 @@ class WelcomeScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Rejoignez la plus grande communauté d'Abidjan pour des échanges simples, rapides et sécurisés.",
+                      "Rejoignez la plus grande communauté de Côte d'Ivoire pour des échanges simples, rapides et sécurisés.",
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white70),
                     ),
                   ),
                   const SizedBox(height: 28),
 
-                  // CTA principal
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -82,7 +77,6 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // Connexion
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
@@ -114,7 +108,7 @@ class WelcomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SocialIconButton(
-                        onTap: () {}, // TODO: brancher google_sign_in
+                        onTap: () {},
                         child: Image.network(
                           'https://www.google.com/favicon.ico',
                           errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, color: Colors.red),

@@ -56,7 +56,7 @@ class ListingCard extends StatelessWidget {
                           ),
                   ),
                 ),
-                if (listing.isRecentlyPublished)
+                if (listing.isRecentlyPublished && listing.status != 'sold')
                   Positioned(
                     top: 10,
                     left: 10,
@@ -66,6 +66,34 @@ class ListingCard extends StatelessWidget {
                       child: const Text('NEUF', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800)),
                     ),
                   ),
+                if (listing.status == 'sold') ...[
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                      child: Container(color: Colors.black.withValues(alpha: 0.45)),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: const Text(
+                          'VENDU',
+                          style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
                 Positioned(
                   top: 8,
                   right: 8,

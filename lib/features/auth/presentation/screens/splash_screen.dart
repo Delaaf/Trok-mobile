@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/notifications/push_notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -33,6 +34,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       // Le token existe localement mais peut avoir été révoqué côté serveur
       // (déconnexion à distance, expiration, compte suspendu...) -> on vérifie.
       await ref.read(authRepositoryProvider).me();
+      ref.read(pushNotificationServiceProvider).registerDeviceToken(); // fire-and-forget
       if (mounted) context.go('/');
     } catch (_) {
       // /auth/me a échoué (401 le plus souvent) -> le token est invalide.

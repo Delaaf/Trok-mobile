@@ -36,7 +36,7 @@ class StepLocationReview extends StatelessWidget {
           Text('Où se trouve l\'article ?', style: textTheme.headlineLarge),
           const SizedBox(height: 20),
 
-          TextField(controller: cityController, decoration: const InputDecoration(labelText: 'Ville', hintText: 'Ex: Abidjan')),
+          TextField(controller: cityController, decoration: const InputDecoration(labelText: 'Ville', hintText: 'Ex: Abidjan, Bouaké, Yamoussoukro...')),
           const SizedBox(height: 8),
           TextField(controller: communeController, decoration: const InputDecoration(labelText: 'Commune / Quartier', hintText: 'Ex: Cocody')),
 

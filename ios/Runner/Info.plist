@@ -32,6 +32,14 @@
     <string>Trok a besoin d'accéder à vos photos pour publier une annonce.</string>
     <key>NSCameraUsageDescription</key>
     <string>Trok a besoin de votre caméra pour prendre une photo pour votre annonce.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Trok utilise votre position pour vous montrer les annonces les plus proches.</string>
+
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification<    /string>
+    </array>
 
     <key>UIApplicationSceneManifest</key>
     <dict>

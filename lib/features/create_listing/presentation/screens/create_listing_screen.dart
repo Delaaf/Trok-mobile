@@ -33,7 +33,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
-  final _cityController = TextEditingController(text: 'Abidjan');
+  final _cityController = TextEditingController();
   final _communeController = TextEditingController();
 
   String _condition = 'good';
